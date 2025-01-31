@@ -1,0 +1,86 @@
+version: '2'
+
+services:
+
+  poll_postgres:
+    container_name: poll_postgres
+    image: postgres:15.2-alpine
+    restart: unless-stopped
+    shm_size: '4gb'
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=poll
+      - POSTGRES_USER=laravel
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ${POSTGRES_DATA_MOUNT_DEV}:/var/lib/postgresql/data
+      - ${POSTGRES_DUMP_LOCATION_DEV}:/tmp/database_dump
+
+
+  poll_backend:
+    container_name: poll_backend
+    restart: unless-stopped
+    build:
+      context: ./poll_backend
+      args:
+        - PUID=1000
+        - PGID=1000
+    volumes_from:
+      - volumes
+    tty: true
+    depends_on:
+      - "poll_postgres"
+    links:
+      - poll_postgres
+      - poll_adminpanel
+
+  poll_frontend:
+    container_name: poll_frontend
+    image: node:18.15.0
+    restart: unless-stopped
+    working_dir: /poll_frontend
+    ports:
+      - "0.0.0.0:4204:4204"
+    command: 'bash -c "npm install && npm run dev"'
+    volumes_from:
+      - volumes
+    user: 1000:1000
+
+  poll_adminpanel:
+    container_name: poll_adminpanel
+    restart: unless-stopped
+    image: node:18.15.0
+    working_dir: /poll_adminpanel
+    ports:
+      - "0.0.0.0:4205:4205"
+    command: 'bash -c "npm install && npm run start"'
+    volumes:
+      - ./poll_adminpanel:/poll_adminpanel
+    user: 1000:1000
+
+  poll_nginx:
+    image: nginx:alpine
+    container_name: poll_nginx
+    restart: unless-stopped
+    volumes_from:
+      - volumes
+    links:
+      - poll_frontend
+      - poll_adminpanel
+      - poll_backend
+    volumes:
+      - ${NGINX_CONF_DEV}:/etc/nginx/conf.d/nginx.conf:ro
+      - ${NGINX_LOGS}:/var/log/nginx
+    ports:
+      - 88:88
+
+
+  ### Databases Data Container ################################
+  volumes:
+    container_name: volumes
+    image: tianon/true
+    user: 1000:1000
+    volumes:
+      - ./poll_backend:/poll_backend
+      - ./poll_frontend:/poll_frontend
