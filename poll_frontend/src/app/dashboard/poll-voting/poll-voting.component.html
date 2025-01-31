@@ -1,0 +1,33 @@
+<div class="poll-voting-component">
+
+    <div *ngIf="formIsLoaded" class="poll-voting-inner-component">
+
+        <div class="header">Poll: {{poll.name}} (code: {{poll.access_code}})</div>
+
+        <div class="questions-content">
+            <form [formGroup]="pollFormGroup">
+
+                <div class="question" *ngFor="let questionControl of questionsControls.controls">
+
+                    <div class="question__title">{{questionControl.value.title}}</div>
+
+
+                    <div *ngIf="questionControl.value.type === QUESTION_TYPES.TYPE_LIST_OF_ANSWERS">
+                        <app-radio-button-input
+                        [questionControl] = questionControl>
+
+                        </app-radio-button-input>
+
+                    </div>
+
+                    <div *ngIf="questionControl.value.type === QUESTION_TYPES.TYPE_OPEN_QUESTION">
+open
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,18 @@
+<div class="dialog modal" id="confirmation-dialog">
+
+    <div mat-dialog-title class="header">
+        {{title}}
+    </div>
+
+    <div mat-dialog-content class="content">
+        {{body}}
+    </div>
+
+    <div mat-dialog-actions class="actions">
+        <div class="right-aligned">
+            <button mat-button (click)="closeDialog()">Cancel</button>
+            <button mat-button (click)="confirm()">Yes</button>
+        </div>
+    </div>
+
+</div>

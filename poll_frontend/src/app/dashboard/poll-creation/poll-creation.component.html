@@ -1,0 +1,162 @@
+<div class="poll-creation-component">
+    <div class="poll-creation-inner-component">
+
+        <div class="top-field">
+            <div>Create a new advanced poll</div>
+
+            <button mat-button (click)="changeToSnapPoll()">Switch to snap poll</button>
+
+            <p>Geens-off to create "one off" simple anonymous polls.</p>
+
+        </div>
+
+        <div>
+            <form [formGroup]="pollFormGroup">
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Access code</mat-label>
+                        <input matInput formControlName="accessCode">
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field>
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="name">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="isAdvancedPoll">
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password">
+                    </mat-form-field>
+                </div>
+
+
+                <div class="divider"></div>
+
+                <div class="question" *ngFor="let questionControl of questionsControls.controls; let i = index">
+
+                    <div class="question__counter">{{i + 1}} Question</div>
+
+                    <div *ngIf="questionsControls.controls.length > 1">
+                        <span (click)="removeQuestion(getQuestionFormControl(questionControl.value.id)['id'].value)">Question <b>x</b></span>
+                    </div>
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Title</mat-label>
+                            <input matInput [formControl]="getQuestionFormControl(questionControl.value.id)['title']">
+                        </mat-form-field>
+                    </div>
+
+                    <div *ngIf="questionControl.value.type === questionTypes.TYPE_LIST_OF_ANSWERS">
+                        <div *ngFor="let outcomeControl of getQuestionFormControl(questionControl.value.id)['outcomes'].controls">
+                            <div>
+                                <mat-form-field>
+                                    <mat-label>Title</mat-label>
+    <!--                                <input matInput [formControl]="getAnswerFormControl(questionControl.value.id, answerControl.value.id)['title']">-->
+                                    <input matInput [formControl]="outcomeControl.controls['title']">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span [matMenuTriggerFor]="addNewQuestion">Add another question</span>
+                        <mat-menu #addNewQuestion="matMenu">
+                            <button mat-menu-item (click)="prepareForGeneralQuestionAdding(questionsControls, questionTypes.TYPE_LIST_OF_ANSWERS)">List of outcomes</button>
+                            <button mat-menu-item (click)="prepareForGeneralQuestionAdding(questionsControls, questionTypes.TYPE_OPEN_QUESTION)">Open question</button>
+                        </mat-menu>
+
+                        <span>|</span>
+
+                        <span [matMenuTriggerFor]="changeQuestion">Change question type</span>
+                        <mat-menu #changeQuestion="matMenu">
+                            <button mat-menu-item (click)="changeQuestionType(questionControl.value.id, questionTypes.TYPE_LIST_OF_ANSWERS)">List of outcomes</button>
+                            <button mat-menu-item (click)="changeQuestionType(questionControl.value.id, questionTypes.TYPE_OPEN_QUESTION)">Open question</button>
+                        </mat-menu>
+
+                    </div>
+                </div>
+
+
+
+                <div class="divider"></div>
+
+
+                <div *ngIf="isAdvancedPoll">
+                    <div>
+                        <mat-slide-toggle
+                            class="example-margin"
+                            formControlName="loginRequiredForVoters"
+                            >
+                            Voters are required to login via geens-account
+                        </mat-slide-toggle>
+                    </div>
+
+                    <div *ngIf="pollFormGroup.value.loginRequiredForVoters">
+                        <mat-form-field>
+                            <mat-label>Limit voters to the following Geens users:</mat-label>
+                            <textarea matInput formControlName="votersGeensIds"></textarea>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+
+
+                <div class="divider" *ngIf="isAdvancedPoll"></div>
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Select</mat-label>
+                        <mat-select [formControl]="getFormControl('startMethod')">
+                            <mat-option [value]="1">Start voting immediately after it is created</mat-option>
+                            <mat-option [value]="2">Start voting manually later</mat-option>
+                            <mat-option [value]="3">Start voting at a specific date/time</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Select</mat-label>
+                        <mat-select [formControl]="getFormControl('closeMethod')">
+                            <mat-option [value]="1">Close voting manually</mat-option>
+                            <mat-option [value]="2">Close voting at a specific date/time</mat-option>
+                            <mat-option [value]="3">Close voting after a time interval (minutes)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Select</mat-label>
+                        <mat-select [formControl]="getFormControl('displayMethod')">
+                            <mat-option [value]="1">Result is not shown to voters</mat-option>
+                            <mat-option [value]="2">Result is shown to voters for a time interval (minutes)</mat-option>
+                            <mat-option [value]="3">Result is shown to voters during the poll and for an interval after that (minutes)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="actions">
+                    <button mat-button>Cancel</button>
+                    <button mat-button (click)="createPoll()">Create</button>
+                </div>
+
+
+            </form>
+        </div>
+
+    </div>
+</div>

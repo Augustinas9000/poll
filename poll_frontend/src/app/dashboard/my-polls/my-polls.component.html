@@ -1,0 +1,65 @@
+<div class="my-polls-container">
+    <div class="my-polls-inner-container">
+        <div>My Polls</div>
+
+        <div class="polls-list-field">
+            <div class="poll-list-controls">
+                <div class="poll-list-controls__actions field">
+                    Start/Stop
+                </div>
+                <div class="poll-list-controls__title field">
+                    Polls
+                </div>
+                <div class="poll-list-controls__results field">
+                    View results
+                </div>
+                <div class="poll-list-controls__settings field">
+                    Settings
+                </div>
+            </div>
+            <div class="poll" *ngFor="let poll of polls">
+
+                <div class="poll__action-button-field field">
+                    <span *ngIf="!poll.time_vote_started && !poll.time_vote_stopped">
+                        <mat-slide-toggle
+                            class="example-margin"
+                            [disableRipple]="true"
+                            [checked]="poll.time_vote_started && !poll.time_vote_stopped"
+                            (change)="startPoll($event, poll)"
+                        >
+                        </mat-slide-toggle>
+                    </span>
+                    <span *ngIf="poll.time_vote_started && !poll.time_vote_stopped">
+                        <mat-slide-toggle
+                            class="example-margin"
+                            [disableRipple]="true"
+                            [checked]="poll.time_vote_started && !poll.time_vote_stopped"
+                            (change)="stopPoll($event, poll)"
+                        >
+                        </mat-slide-toggle>
+                    </span>
+                    <span *ngIf="poll.time_vote_stopped">
+                        Poll ended:<br>
+                        {{poll.time_vote_stopped}}
+                    </span>
+
+                </div>
+
+                <div class="poll__name field">
+                    <div (click)="navigate('dashboard/voting', poll.access_code)">
+                        {{ poll.access_code }}
+                    </div>
+                </div>
+
+                <div class="poll__results field">
+
+                </div>
+
+                <div class="poll__settings field">
+                    <mat-icon (click)="navigate('dashboard/settings', poll.access_code)">settings</mat-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

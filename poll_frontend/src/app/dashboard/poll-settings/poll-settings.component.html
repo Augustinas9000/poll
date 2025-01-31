@@ -1,0 +1,23 @@
+<div class="poll-settings-container">
+    <div *ngIf="poll" class="poll-settings-inner-container">
+        <div class="header">{{poll.name}} (code: {{poll.access_code}})</div>
+
+        <div class="divider"></div>
+
+        <div>
+            <div *ngIf="poll.snap_vote">Snap poll</div>
+            <div *ngIf="!poll.snap_vote">Advanced poll</div>
+        </div>
+
+        <div *ngIf="poll.password">
+            <button mat-button>Show poll password</button>
+        </div>
+
+        <div>
+            <button mat-button (click)="copyPoll()">Make poll copy</button>
+
+        </div>
+
+    </div>
+
+</div>

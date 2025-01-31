@@ -1,0 +1,33 @@
+<div class="header-component">
+    <div class="field logo-field">
+        <h1>POLL</h1>
+    </div>
+    <div class="field poll-creation-field">
+        <button mat-button (click)="navigate('dashboard/create')">Create poll</button>
+    </div>
+    <div class="field poll-list-field">
+        <button mat-button (click)="navigate('dashboard/manage')">Polls list</button>
+    </div>
+
+    <div class="field actions-field">
+
+        <div class="actions-field__text" [matMenuTriggerFor]="menu">
+            My GeePoll
+            <mat-icon>keyboard_arrow_down</mat-icon>
+        </div>
+
+
+        <mat-menu #menu="matMenu">
+            <div class="menu-content">
+                <div class="link" (click)="logout()">
+                    <span>Logout</span>
+                </div>
+                <div class="link" (click)="navigate('dashboard/manage')">
+                    <span>My Polls</span>
+                </div>
+            </div>
+        </mat-menu>
+
+
+    </div>
+</div>
